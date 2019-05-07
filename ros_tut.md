@@ -1,6 +1,6 @@
-# ROS Tutorial - beginners__
+# ROS Tutorial - beginners
 ROS- robot oprating system, ros service is service provided by robot
-**__Creating a ROS Workspace__
+## Creating a ROS Workspace
  $ mkdir -p ~/catkin_ws/src
  $ cd ~/catkin_ws/
  $ catkin_make
