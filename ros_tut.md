@@ -110,6 +110,48 @@ create a launch file called turtlemimic.launch and write the code for for two mi
 <br /> In a new terminal type <br />$roslaunch beginner_tutorials turtlemimic.launch<br />
 Then $ rostopic pub /turtlesim1/turtle1/cmd_vel geometry_msgs/Twist -r 1 -- '[2.0, 0.0, 0.0]' '[0.0, 0.0, -1.8]'<br />
 You will see the two turtlesims start moving even though the publish command is only being sent to turtlesim1. 
+## ROS msg and srv
+* msg files are simple text files that describe the fields of a ROS message. They are used to generate source code for messages in different languages. 
+* an srv file describes a service. It is composed of two parts: a request and a response. 
+msg files are stored in the msg directory of a package, and srv files are stored in the srv directory. <br />
+msgs are just simple text files with a field type and field name per line. The field types you can use are: 
+int8, int16, int32, int64 (plus uint*) <br />
+float32, float64 <br />
+string <br />
+time, duration <br />
+other msg files <br />
+variable-length array[] and fixed-length array[C]  <br />
+ <br /> <br />
+ There is also a special type in ROS: Header, the header contains a timestamp and coordinate frame information that are commonly used in ROS. You will frequently see the first line in a msg file have Header header. 
+ Here is an example of a msg that uses a Header, a string primitive, and two other msgs : <br />
+ ```
+ Header header
+  string child_frame_id
+  geometry_msgs/PoseWithCovariance pose
+  geometry_msgs/TwistWithCovariance twist
+  ```
+  srv files are just like msg files, except they contain two parts: a request and a response. The two parts are separated by a '---' line. Here is an example of a srv file: 
+```
+int64 A
+int64 B
+---
+int64 Sum
+```
+## Review
+    rospack = ros+pack(age) : provides information related to ROS packages
+
+    roscd = ros+cd : changes directory to a ROS package or stack
+
+    rosls = ros+ls : lists files in a ROS package
+
+    roscp = ros+cp : copies files from/to a ROS package
+    rosmsg = ros+msg : provides information related to ROS message definitions
+    rossrv = ros+srv : provides information related to ROS service definitions
+    catkin_make : makes (compiles) a ROS package
+        rosmake = ros+make : makes (compiles) a ROS package (if you're not using a catkin workspace) 
+
+
+
 
 
 
