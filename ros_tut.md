@@ -35,5 +35,16 @@ $ catkin_make
 This process is run for each CMake project.
 ## Ros Nodes
 ![ROS node](http://www.clearpathrobotics.com/assets/guides/ros/_images/ros101one.png)
+1. roscore = ros+core : master (provides name service for ROS) + rosout (stdout/stderr) + parameter server (parameter server will be introduced later) 
+1. rosnode = ros+node : ROS tool to get information about a node. 
+1. rosrun = ros+run : runs a node from a given package. 
+Rosnode has some interesting functions which can be seen be typing  $rosnode topic
+Some important functions are given 
+* $rosnode list - The rosnode list command lists these active nodes.
+* $rosnode info - The rosnode info command returns information
+Rosrun allows you to use the package name to directly run a node within a package (without having to know the package path). 
+
+
+
      
 
