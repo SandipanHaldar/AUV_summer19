@@ -72,5 +72,7 @@ Or, the opposite, we can pass data from the state machine to a state FOO. If 'sm
 
     FOO: remapping={'foo_input':'sm_input'} 
  ![pic3](  http://wiki.ros.org/smach/Tutorials/User%20Data?action=AttachFile&do=get&target=user_data.png)
+## Create a Hierarchical State Machine
+### Creating some states
 
 
