@@ -31,6 +31,7 @@ sm = smach.StateMachine(outcomes=['outcome4','outcome5'])
                             transitions={'outcome2':'FOO'}
  ```
  The resulting state machine looks like this:
+ 
  ![pic2](http://wiki.ros.org/smach/Tutorials/Getting%20Started?action=AttachFile&do=get&target=simple.png)
 * The red boxes show the possible outcomes of the state machine container: outcome4 and outcome5, as specified in line 1.
 
@@ -77,4 +78,18 @@ Or, the opposite, we can pass data from the state machine to a state FOO. If 'sm
 We create a top level state machine, and start adding states to it. One of the states we add is another state machine:
 The only point to take away from this is that every state machine is also a normal state. So you can add a state machine to another state machine in the same way you add a state to a state machine. So dealing with userdata is not any different when you deal with hierarchical state machines: the sub state machine specifies input and output keys, and they get remapped when you add the sub state machine to the top level state machine.
 ![pic3](http://wiki.ros.org/smach/Tutorials/Create%20a%20hierarchical%20state%20machine?action=AttachFile&do=get&target=sm_expanded.png)
+
+## Calling Actions from a State Machine (ROS)
+You could simply call any action from a generic state, but SMACH has specific support to call actions, saving you a lot of code! SMACH provides a state class that acts as a proxy to an actionlib action. The instantiation of the state takes a topic name, action type, and some policy for generating a goal. The possible outcomes of the simple action state are 'succeeded', 'preempted' and 'aborted'.
+
+Depending on how you get your goal, there are simple and more complex ways to use the simple action state.
+### Goal Messages
+The types of goal messages are given
+* Empty Goal Message
+* Fixed Goal Message
+* Goal from User Data
+* Goal callback
+### Result Message
+* Result Frrom user
+* Result Callback
 
