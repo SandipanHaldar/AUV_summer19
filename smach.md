@@ -48,4 +48,29 @@ sm = smach.StateMachine(outcomes=['outcome4','outcome5'])
 * Concurrence: a state machine that can run multiple states in parallel.
 
 * Sequence: a state machine that makes it easy to execute a set of states in sequence. The 'Smach Containers' section on the tutorials page gives an overview of all available containers.
+## Passing User Data between States
+### Specifying User Data
+A state could require some input data to do its work, and/or it could have some output data it wants to provide to other states. The input and output data of a state is called userdata of the state. When you construct a state, you can specify the names of the userdata fields it needs/provides. 
+* The input_keys list enumerates all the inputs that a state needs to run. A state declares that it expect these fields to exist in the userdata. The execute method is provided a copy of the userdata struct. The state can read from all userdata fields that it enumerates in the input_keys list, but it can't write to any of these fields. 
+* The output_keys list enumerates all the outputs that a state provides. The state can write to all fields in the userdata struct that are enumerated in the output_keys list. 
+The interface to a state is defined by its outcomes, its input keys and its output keys. 
+### Connecting User Data
+When adding states to a state machine, you also need to connect the user data fields, to allow states to pass data to each other. For example, if state FOO produces 'foo_output', and state BAR needs 'bar_input', then you can attach these two user data ports together using name remapping:
+The remapping field maps the in/output_key of a state to a userdata field of the state machine. So when you remap 'x':'y':
+
+    x needs to be an input_key or an output_key of the state, and
+    y will automatically become part of the userdata of the state machine.
+ We can use the remapping mechanism to pass data from state FOO to state BAR. To accomplish this, we need one remapping when adding FOO, and one remapping when adding BAR:
+
+    FOO: remapping={'foo_output':'sm_user_data'}
+    BAR: remapping={'bar_input':'sm_user_data'} 
+ We can also use the remapping mechanism to pass data from a state BAR to the state machine that contains BAR. If 'sm_output' is an output key of the state machine:
+
+    BAR: remapping={'bar_output':'sm_output'} 
+
+Or, the opposite, we can pass data from the state machine to a state FOO. If 'sm_input' is an input key of the state machine:
+
+    FOO: remapping={'foo_input':'sm_input'} 
+ ![pic3](  http://wiki.ros.org/smach/Tutorials/User%20Data?action=AttachFile&do=get&target=user_data.png)
+
 
