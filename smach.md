@@ -92,4 +92,32 @@ The types of goal messages are given
 ### Result Message
 * Result Frrom user
 * Result Callback
+## Viewing State Machines (ROS)
+SMACH containers can provide a debugging interface (over ROS) which allows a developer to get full introspection into a state machine. The SMACH viewer can use this debugging interface to visualize and interact with your state machine. To add this debugging interface to a state machine, add the following lines to your code: 
+```
+# First you create a state machine sm
+# .....
+# Creating of state machine sm finished
+
+# Create and start the introspection server
+sis = smach_ros.IntrospectionServer('server_name', sm, '/SM_ROOT')
+sis.start()
+
+# Execute the state machine
+outcome = sm.execute()
+
+# Wait for ctrl-c to stop the application
+rospy.spin()
+sis.stop()
+
+```
+* server_name: this name is used to create a namespace for the ROS introspection topics. You can name this anything you like, as long as this name is unique in your system. This name is not shown in the smach viewer.
+* SM_ROOT: your state machine will show up under this name in the smach viewer. So you can pretty much choose any name you like. If you have sub-state machines that are in different executables, you can make them show up as hierarchical state machines by choosing this name in a clever way.
+The smach viewer will automatically traverse the child containers of sm, if any exist, and add ros hooks to each of them. So you only need to hook up one introspection server to the top level state machine, not to the sub state machines. Once the introspection server has been instantiated, it will advertise a set of topics with names constructed by appending to the server name given to it on construction
+Once you have one or more introspection servers running in your ROS system, you can start the smach viewer using:
+```
+  rosrun smach_viewer smach_viewer.py
+```
+The viewer will automatically connect to all running introspection servers. 
+
 
