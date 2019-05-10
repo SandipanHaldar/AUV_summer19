@@ -73,6 +73,8 @@ Or, the opposite, we can pass data from the state machine to a state FOO. If 'sm
     FOO: remapping={'foo_input':'sm_input'} 
  ![pic3](  http://wiki.ros.org/smach/Tutorials/User%20Data?action=AttachFile&do=get&target=user_data.png)
 ## Create a Hierarchical State Machine
-### Creating some states
-
+ We create a number of states, each with a number of outcomes, input keys and output keys specified.
+We create a top level state machine, and start adding states to it. One of the states we add is another state machine:
+The only point to take away from this is that every state machine is also a normal state. So you can add a state machine to another state machine in the same way you add a state to a state machine. So dealing with userdata is not any different when you deal with hierarchical state machines: the sub state machine specifies input and output keys, and they get remapped when you add the sub state machine to the top level state machine.
+![pic3](http://wiki.ros.org/smach/Tutorials/Create%20a%20hierarchical%20state%20machine?action=AttachFile&do=get&target=sm_expanded.png)
 
