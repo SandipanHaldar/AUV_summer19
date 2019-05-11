@@ -208,6 +208,32 @@ sm = StateMachine(
         input_keys = ['my_awesome_goal'],
         output_keys = ['egad_its_a_result'])
 ```
+## Generic State
+This tutorial shows how to implement a genericstate in smach
+The most general (but often least efficient) way to create a state is to derive from the 'State' base class. You can pretty much do anything you want in the execute method of a state. Know that SMACH comes with a library of useful states that you can use, without having to write a whole custom state.
+```
+from smach import State
+```
+```
+ class Foo(smach.State):
+     def __init__(self, outcomes=['outcome1', 'outcome2']):
+       # Your state initialization goes here
+     
+     def execute(self, userdata):
+        # Your state execution goes here
+        if xxxx:
+            return 'outcome1'
+        else:
+            return 'outcome2'
+```
+Some good code practices:
+
+Do not block in your constructor. If your state needs to wait for another component to come up, do this in a separate thread
+## CBState
+This willshow hw to use a CBState , a state that simpley uses a callback when active.
+This state simply executes a single callback when the state is executed. This is useful for executing arbitrary code in a state, without having to declare a new state class. This class supports the use of the smach.cb_interface decorator, and its API can be found [here](http://www.ros.org/doc/api/smach/html/python/smach.state.CBState-class.html#__init__).
+
+The CBState calls the callback with at least one argument: the container's userdata. Additional arguments and keyword arguments can be given to the CBState on construction. These args will be passed into the callback when the CBState is executed.
 
 
 
