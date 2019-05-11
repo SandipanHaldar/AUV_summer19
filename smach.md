@@ -119,5 +119,97 @@ Once you have one or more introspection servers running in your ROS system, you 
   rosrun smach_viewer smach_viewer.py
 ```
 The viewer will automatically connect to all running introspection servers. 
+## SMACH Containers
+### StateMachine container
+First import the state machine. Since a SMACH StateMachine also provides a State interface, its outcomes and userdata interactions must be specified on construction.Similarly to the SMACH State interface, input keys and output keys are optional.<br />
+When adding states to a state machine you first specify the state machine you want to add states to. This can be done by using Python's "with" statement. You can think of this like "opening" the container for construction. It creates a context in which all subsequent add* calls will apply to the open container.
+### Concurrence container
+The outcome map of a SMACH concurrence specifies the policy for determining the outcome of the concurrence based on the outcomes of its children. Specifically, the map is a dictionary where the keys are potential outcomes of the concurrence, and the values are dictionaries mapping child labels onto child outcomes. Once all the states in the concurrence have terminated, if one of these child-outcome mappings is satisfied, the concurrence will return its associated outcome. If none of the mappings are satisfied, the concurrence will return its default outcome.
+### Sequence container
+The Sequence container is a StateMachine container, extended with auto-generated transitions that create a sequence of states from the order in which said states are added to the container. Only the differences are noted here.
+<br/>First import the sequence type . A container Sequence has its outcomes, specified on construction, along with the 'connector_outcome' which is used for the automatic transitions. The constructor signature is:
+```
+ __init__(self, outcomes, connector_outcome):
+```
+Adding states to a sequence is the same as to a container.<br />
+But, each state added will receive an additional transition from it to the state which is added after it. The transition will follow the outcome specified at construction of this container.<br />
+If one of the transitions given in the dictionary mapping parameter to 'Sequence.add()' follows the connector outcome specified in the constructor, the provided transition will override the automatically generated connector transition.<br />
+For example, when creating a sequence of action states, no transition mapping is needed. All action states have the usual outcome triple, which the sequence needs to have as its outcomes, too:
+
+```
+
+   1 sq = Sequence(
+   2         outcomes = ['succeeded','aborted','preempted'],
+   3         connector_outcome = 'succeeded')
+   4 with sq:
+   5     Sequence.add('MOVE_ARM_GRAB_PRE', MoveVerticalGripperPoseActionState())
+   6     Sequence.add('MOVE_GRIPPER_OPEN', MoveGripperState(GRIPPER_MAX_WIDTH))
+   7     Sequence.add('MOVE_ARM_GRAB',     MoveVerticalGripperPoseActionState())
+   8     Sequence.add('MOVE_GRIPPER_CLOSE', MoveGripperState(grab_width))
+   9     Sequence.add('MOVE_ARM_GRAB_POST', MoveVerticalGripperPoseActionState())
+```
+### Iterator container
+The iterator allows you to loop through a state or states until success conditions are met. This tutorial demonstrates how to use an iterator to sort a list of numbers into evens and odds.
+<br />
+A sample of forming loops is given below<br />
+[link](https://raw.githubusercontent.com/eacousineau/executive_smach_tutorials/hydro-devel/smach_tutorials/examples/iterator_tutorial.py)
+The smach viewer would give the following result
+![pic](http://wiki.ros.org/smach/Tutorials/Iterator%20container?action=AttachFile&do=get&target=smach_tutorial.png)
+### Wrapping a Container With actionlib
+SMACH provides the top-level container called ActionServerWrapper. This class advertises an actionlib action server. Instead of being executed by a parent, its contained state goes active when the action server receives a goal. Accordingly, this container does not inherit from the smach.State base class and cannot be put inside of another container.
+
+The action server wrapper can inject the goal message received by the action server into the contained state, as well as extract the result message from that state when it terminates. When constructing the action server wrapper, the user specifies which state machine outcomes correspond to a succeeded, aborted, or preempted result.
+Consider this example, which wraps a SMACH state machine as an action:
+
+
+```
+import rospy
+
+from smach import StateMachine
+from smach_ros import ActionServerWrapper
+
+# Construct state machine
+sm = StateMachine(outcomes=['did_something',
+                            'did_something_else',
+                            'aborted',
+                            'preempted'])
+with sm:
+    ### Add states in here...
+
+# Construct action server wrapper
+asw = ActionServerWrapper(
+    'my_action_server_name', MyAction,
+    wrapped_container = sm,
+    succeeded_outcomes = ['did_something','did_something_else'],
+    aborted_outcomes = ['aborted'],
+    preempted_outcomes = ['preempted'] )
+
+# Run the server in a background thread
+asw.run_server()
+
+# Wait for control-c
+rospy.spin()
+```
+The above code will call sm.execute(), but it will not load the goal into the contained state machine, nor will it extract a result. In order to do these things, you need to tell the action server wrapper what it should call the goal and result messages in the context of SMACH. You can replace the action server wrapper construction call with the following:
+```# Construct action server wrapper
+asw = ActionServerWrapper(
+    'my_action_server_name', MyAction, sm,
+    ['did_something','did_something_else'], ['aborted'], ['preempted'],
+    goal_key = 'my_awesome_goal',
+    result_key = 'egad_its_a_result' )
+ ```
+The keyword arguments goal_key and result_key are the SMACH userdata keys in the context of the ActionServerWrapper. Like any other container, this means that the wrapper's contained state (in this case the state machine sm) will receive a reference to this userdata structure when its execute() method is called. Similarly to how userdata is passed between scopes in nested state machines, in this case, you need to set these key identifiers in the state machine sm as well.
+
+In order to copy in the keys form the parent, you can replace the construction call for the state machine sm with this:
+```
+ Construct state machine
+sm = StateMachine(
+        outcomes=['did_something','did_something_else','aborted','preempted'],
+        input_keys = ['my_awesome_goal'],
+        output_keys = ['egad_its_a_result'])
+```
+
+
+
 
 
