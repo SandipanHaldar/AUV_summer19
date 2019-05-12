@@ -235,7 +235,69 @@ This state simply executes a single callback when the state is executed. This is
 
 The CBState calls the callback with at least one argument: the container's userdata. Additional arguments and keyword arguments can be given to the CBState on construction. These args will be passed into the callback when the CBState is executed.
 
+## SimpleActionState
+You could simply call any action from a generic state, but SMACH has specific support to call actions, saving you a lot of code! SMACH provides a state class that acts as a proxy to an actionlib action. The instantiation of the state takes a topic name, action type, and some policy for generating a goal. The possible outcomes of the simple action state are 'succeeded', 'preempted' and 'aborted'.
 
+Depending on how you get your goal, there are simple and more complex ways to use the simple action state. 
+### Goal Message
+* Empty Goal Message- This is the trivial case, which will call an action server without filling out anything in the goal message
+* Fixed Goal Message-  A slightly more advanced usage let's you specify a hard-coded fixed goal that will get passed to the action server.
+* Goal from user data- Imagine you have a number of fields in the user data that already contain all the structs you need for your goal message. Then you can simply connect the userdata directly to the fields in the goal message. So, from the example above we learn that the gripper action has two fields in its goal: max_effort and position. Imagine our userdata contains the corresponding fields user_data_max and user_data_position. The code below connects the corresponding fields.
+* Goal Callback- In your goal callback you can use userdata, as long as you list the input_keys in the constructor. One of the arguments of the callback is the default goal. If you specified the 'goal=...' in the constructor, that object would get passed into the callback. 
+### Result Message
+* Result to userdata- You can write the result of the action directly to the userdata of your state. 
+* Result CallBack- The result callback is very similar to the goal callback. It allows you to read any data from the action result fields, and even return a different outcome than the default 'succeeded', 'preempted', 'aborted'.
+## ServiceState
+The instantiation of the state takes a service name, service type, and some policy for generating a service request. The possible outcomes of the service state are 'succeeded', 'preempted' and 'aborted'.
 
+ The service state is almost identical to the simple action state. Just replace 'goal' with 'request', and 'result' with 'response'.
+ ### Request
+* Request empty message
+* Fixed request message
+* Request callback
+* request from user datat
+### response
+* Response to user data
+* Response callback
+## MonitorState
+Here's an example of a simple state machine using MonitorState. In order to transition from state Foo to state Bar, send a message to the /sm_reset topic:
+```
+rostopic pub -1 /sm_reset std_msgs/Empty
+```
+```
+!/usr/bin/env python
+import roslib; roslib.load_manifest('smach_MonitorState_example')
+import rospy
+import smach
+import smach_ros
 
+from std_msgs.msg import Empty
+
+class bar(smach.State):
+    def __init__(self):
+        smach.State.__init__(self, outcomes=['bar_succeeded'])
+    def execute(self, userdata):
+        rospy.sleep(3.0)
+        return 'bar_succeeded'
+
+def monitor_cb(ud, msg):
+    return False
+
+def main():
+    rospy.init_node("monitor_example")
+
+    sm = smach.StateMachine(outcomes=['DONE'])
+    with sm:
+        smach.StateMachine.add('FOO', smach_ros.MonitorState("/sm_reset", Empty, monitor_cb), transitions={'invalid':'BAR', 'valid':'FOO', 'preempted':'FOO'})
+        smach.StateMachine.add('BAR',bar(), transitions={'bar_succeeded':'FOO'})
+
+    sis = smach_ros.IntrospectionServer('smach_server', sm, '/SM_ROOT')
+    sis.start()
+    sm.execute()
+    rospy.spin()
+    sis.stop()
+
+if __name__=="__main__":
+    main()
+```
 
