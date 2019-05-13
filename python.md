@@ -24,3 +24,11 @@ String literals in python are surrounded by either single quotation marks, or do
 'hello' is the same as "hello".
 Strings can be output to screen using the print function. For example: print("hello").
 * Python does not have a character data type, a single character is simply a string with a length of 1.
+1. Get the character at position 1 (remember that the first character has the position 0)
+1. Substring. Get the characters from position 2 to position 5 (not included):
+1. The strip() method removes any whitespace from the beginning or the end:
+1. The len() method returns the length of a string:
+1. The lower() method returns the string in lower case:
+1. The upper() method returns the string in upper case:
+1. The replace() method replaces a string with another string:
+1. The split() method splits the string into substrings if it finds instances of the separator:
