@@ -32,3 +32,34 @@ Strings can be output to screen using the print function. For example: print("he
 1. The upper() method returns the string in upper case:
 1. The replace() method replaces a string with another string:
 1. The split() method splits the string into substrings if it finds instances of the separator:
+## Python Collections (Arrays)
+
+*    List is a collection which is ordered and changeable. Allows duplicate members.
+ *   Tuple is a collection which is ordered and unchangeable. Allows duplicate members.
+  *  Set is a collection which is unordered and unindexed. No duplicate members.
+   * Dictionary is a collection which is unordered, changeable and indexed. No duplicate members.
+### List
+A list is a collection which is ordered and changeable. In Python lists are written with square brackets.
+* You access the list items by referring to the index number:
+* To change the value of a specific item, refer to the index number.
+* You can loop through the list items by using a for loop.
+* To determine if a specified item is present in a list use the in keyword:
+* To determine how many items a list has, use the len() method:
+* To add an item to the end of the list, use the append() method:
+* To add an item at the specified index, use the insert() method:
+* The remove() method removes the specified item:
+* TheThe del keyword removes the specified index: pop() method removes the specified index, (or the last item if index is not specified
+Python has a set of built-in methods that you can use on lists.
+|command     | description                                                                   |<br />
+|------------|-------------------------------------------------------------------------------|<br />
+|append()    | add the element                                                               |<br />
+|clear()     | removes the element                                                           |<br />
+|copy()      |	Returns a copy of the list                                                   |<br />
+|count()     |	Returns the number of elements with the specified value                      |<br />
+|extend()    |	Add the elements of a list (or any iterable), to the end of the current list |<br />
+|index()	   | Returns the index of the first element with the specified value               |<br />
+|insert()    | Adds an element at the specified position                                     |<br />
+|pop()       |	Removes the element at the specified position                                |<br />
+|remove()    |	Removes the item with the specified value                                    |<br />
+|reverse()   |	Reverses the order of the list                                               |<br />
+|sort()      | Sorts the list                                                                |<br />
