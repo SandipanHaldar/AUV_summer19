@@ -63,3 +63,38 @@ Python has a set of built-in methods that you can use on lists.
 |remove()    |	Removes the item with the specified value                                    |<br />
 |reverse()   |	Reverses the order of the list                                               |<br />
 |sort()      | Sorts the list                                                                |<br />
+### Tuples
+Once a tuple is created, you cannot change its values. Tuples are unchangeable.
+count ()   returns the number of times a specific value occurs in a tuple
+index()    Searches the tuple for a  particular value and returnes the index if found
+### Sets
+add()	               Adds an element to the set<br />
+clear()	             Removes all the elements from the set<br />
+copy()	                   Returns a copy of the set<br />
+difference()	         Returns a set containing the difference between two or more sets<br />
+difference_update()	  Removes the items in this set that are also included in another, specified set<br />
+discard()	             Remove the specified item<br />
+intersection()	        Returns a set, that is the intersection of two other sets<br />
+intersection_update()	  Removes the items in this set that are not present in other, specified set(s)<br />
+isdisjoint()	            Returns whether two sets have a intersection or not<br />
+issubset()	             Returns whether another set contains this set or not<br />
+issuperset()	             Returns whether this set contains another set or not<br />
+pop()	                    Removes an element from the set<br />
+remove()	                Removes the specified element<br />
+symmetric_difference()	   Returns a set with the symmetric differences of two sets<br />
+symmetric_difference_update()	  inserts the symmetric differences from this set and another<br />
+union()                        	Return a set containing the union of sets<br />
+update()	                       Update the set with the union of this set and others<br />
+### Dictionary
+ dictionary is a collection which is unordered, changeable and indexed. In Python dictionaries are written with curly brackets, and they have keys and values.
+clear()	           Removes all the elements from the dictionary<br />
+copy()	             Returns a copy of the dictionary<br />
+fromkeys()	         Returns a dictionary with the specified keys and values<br />
+get()	             Returns the value of the specified key<br />
+items()	            Returns a list containing the a tuple for each key value pair<br />
+keys()	           Returns a list containing the dictionary's keys<br />
+pop()	            Removes the element with the specified key<br />
+popitem()	        Removes the last inserted key-value pair<br />
+setdefault()	     Returns the value of the specified key. If the key does not exist: insert the key, with the specified value<br />
+update()	         Updates the dictionary with the specified key-value pairs<br />
+values()	          Returns a list of all the values in the dictionary<br />
