@@ -150,11 +150,71 @@ int64 Sum
     catkin_make : makes (compiles) a ROS package
         rosmake = ros+make : makes (compiles) a ROS package (if you're not using a catkin workspace) 
 
+# Intermidiate 
+## Creating a ROS package by hand.
+There is a tool for creating ROS Packages (catkin_create_pkg), but, as you will see, there is nothing actually difficult here. catkin_create_pkg prevents mistakes and saves effort, but packages are just a directory and a simple XML file.
 
+Now we'll create a new foobar package. This tutorial assumes that we're working your catkin workspace and sourcing of the setup file is already done.
+```
+catkin_ws_top $ mkdir -p src/foobar
+catkin_ws_top $ cd src/foobar
+```
+The very first thing we'll do is add our manifest file. The package.xml file allows tools like rospack to determine information about what your package depends upon.
+```
+<package format="2">
+  <name>foobar</name>
+  <version>1.2.4</version>
+  <description>
+  This package provides foo capability.
+  </description>
+  <maintainer email="foobar@foo.bar.willowgarage.com">PR-foobar</maintainer>
+  <license>BSD</license>
 
+  <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend>roscpp</build_depend>
+  <build_depend>std_msgs</build_depend>
 
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+</package>
+```
+Now that your package has a manifest, ROS can find it. Try executing the command:
+```
+rospack find foobar
+```
+If ROS is set up correctly you should see something like: /home/user/ros/catkin_ws_top/src/foobar. This is how ROS finds packages behind the scenes.
 
+Note that this package now also has dependencies on roscpp and std_msgs.
+
+Such dependencies are used by catkin to configure packages in the right order.
+
+Now we need the CMakeLists.txt file so that catkin_make, which uses CMake for its more powerful flexibility when building across multiple platforms, builds the package.
+In Foobar/CMmakeList.txt put
+```
+cmake_minimum_required(VERSION 2.8.3)
+project(foobar)
+find_package(catkin REQUIRED roscpp std_msgs)
+catkin_package()
+```
+That's all you need to start building a package in ROS using catkin. Of course, if you want it to actually start building something, you're going to need to learn a couple more CMake macros. See our CMakeLists.txt guide for more information. Also always go back to beginner level tutorial (CreatingPackage and so on) to customize your package.xml and CMakeLists.txt.
+## Managing System dependencies
+ This explains how to use rosdep to install system dependencies.
+### System Dependencies
+ROS packages sometimes require external libraries and tools that must be provided by the operating system. These required libraries and tools are commonly referred to as system dependencies. In some cases these system dependencies are not installed by default. ROS provides a simple tool, rosdep, that is used to download and install system dependencies.
+
+ROS packages must declare that they need these system dependencies in the package manifest. Let's look at the manifest for the turtlesim package:
+Rosdep is a tool you can use to install system dependencies required by ROS packages.
+Download and install the system dependencies for turtlesim
+* Rosdistro/rosdep
+rosdep actually retrieves the rules from the rosdistro github repository.
+
+As of version 0.14.0 rosdep update will only fetch ROS package names for non-EOL ROS distributions. If you are still using an EOL ROS distribution (which you probably shouldn't) you can pass the argument --include-eol-distros to also fetch the ROS package names of those.
+
+These rules are used when a dependency is listed that doesn't match the name of a ROS package built on the buildfarm. Then rosdep checks if there exists a rule to resolve it for the proper platform and package manager you are using.
+
+When creating a new package, you might need to declare new system dependencies to the rosdep rules if they are not there yet. Just edit the file, add the dependency needed (following a strict alphabetical order and a similar structure as the other dependencies already registered) and send a pull request.
+### Roslaunch tips for large projects
 
      
 
